@@ -31,4 +31,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: "latest, ${{ github.sha }}"
+          tags: "${{ env.IMAGE_NAME }}:${{ github.sha }}, ${{ env.IMAGE_NAME }}:latest"
