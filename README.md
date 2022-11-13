@@ -47,7 +47,7 @@ Currently the exporter exports all numeric states of a sensor into a single gaug
 ```
 # HELP deconz_sensor_state Sensor state value
 # TYPE deconz_sensor_state gauge
-deconz_sensor_state{sensor,state,type}
+deconz_sensor_state{manufacturername,modelid,name,sensor,state,type}
 ```
 
 The gauge has multiple labels to identify the sensor and state. 

@@ -11,7 +11,7 @@ var Sensor = prometheus.NewGaugeVec(
 		Namespace: "deconz",
 		Help:      "Sensor state value",
 	},
-	[]string{"sensor", "type", "state"},
+	[]string{"sensor", "type", "state", "manufacturername", "modelid", "name"},
 )
 
 func Init() {

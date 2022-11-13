@@ -71,7 +71,14 @@ func (c *clientImpl) setMetrics(id string, sensor Sensor) {
 	for key, state := range sensor.State {
 		if value, ok := state.(float64); ok {
 			metrics.Sensor.
-				WithLabelValues(id, sensor.Type, key).
+				WithLabelValues(
+					id,
+					sensor.Type,
+					key,
+					sensor.Manufacturername,
+					sensor.Modelid,
+					sensor.Name,
+				).
 				Set(value)
 		}
 	}
