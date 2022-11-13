@@ -12,7 +12,7 @@ docker run \
   -e 'DECONZ_URL=http://127.0.0.1' \
   -e 'DECONZ_API_KEY=mykey' \
   -p 8080:8080 \
-  deconz-exporter:latest
+  ghcr.io/davidborzek/deconz-exporter:latest
 ```
 
 ### Obtaining an deCONZ API Key
@@ -26,7 +26,7 @@ You can optionally provide `DECONZ_USERNAME` to set a custom key with a minimum 
 ```bash
 docker run \
   -e 'DECONZ_URL=http://127.0.0.1' \
-  deconz-exporter:latest auth
+  ghcr.io/davidborzek/deconz-exporter:latest auth
 ```
 
 ### Prometheus config
