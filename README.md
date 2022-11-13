@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/davidborzek/deconz-exporter/actions/workflows/docker.yml/badge.svg)](https://github.com/davidborzek/deconz-exporter/actions/workflows/docker.yml)
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/davidborzek/deconz-exporter)](https://goreportcard.com/report/github.com/davidborzek/deconz-exporter)
 # deCONZ Prometheus Exporter
 
