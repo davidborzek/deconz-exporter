@@ -19,13 +19,13 @@ docker run \
 
 You can use the `auth` command to acquire a new key.
 
-The `URL` specifies the url of your deCONZ server.
+The `DECONZ_URL` specifies the url of your deCONZ server.
 
-You can optionally provide `USERNAME` to set a custom key with a minimum length of 10 and a maximum length of 40. 
+You can optionally provide `DECONZ_USERNAME` to set a custom key with a minimum length of 10 and a maximum length of 40. 
 
 ```bash
 docker run \
-  -e 'URL=http://127.0.0.1' \
+  -e 'DECONZ_URL=http://127.0.0.1' \
   deconz-exporter:latest auth
 ```
 
