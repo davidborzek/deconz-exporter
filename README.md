@@ -1,3 +1,4 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/davidborzek/deconz-exporter)](https://goreportcard.com/report/github.com/davidborzek/deconz-exporter)
 # deCONZ Prometheus Exporter
 
 This is a Prometheus exporter for deCONZ / Phoscon.
