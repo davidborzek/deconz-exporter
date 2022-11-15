@@ -52,4 +52,12 @@ Currently the exporter exports all numeric and boolean states of a sensor into i
 deconz_sensor_state{manufacturername,modelid,name,sensor,state,type}
 ```
 
-The gauge has multiple labels to identify the sensor and state. 
+> The gauge has multiple labels to identify the sensor and state. 
+
+Additionally a counter of errors during scraping the metrics gets exported: 
+
+```
+# HELP deconz_scrape_errors_total Total errors during collecting metrics
+# TYPE deconz_scrape_errors_total counter
+deconz_scrape_errors_total 0
+```

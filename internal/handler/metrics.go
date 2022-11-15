@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/davidborzek/deconz-exporter/internal/metrics"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 )
@@ -24,8 +25,7 @@ func (s *handler) handleMetrics() func(http.ResponseWriter, *http.Request) {
 			log.WithError(err).
 				Error("failed to collect metrics from deCONZ")
 
-			w.WriteHeader(http.StatusInternalServerError)
-			return
+			metrics.ErrorCounter.Inc()
 		}
 
 		promhttp.Handler().ServeHTTP(w, r)
