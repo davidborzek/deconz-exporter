@@ -67,19 +67,34 @@ func (c *clientImpl) getSensors() (*GetSensorsResponse, error) {
 	return &sensors, nil
 }
 
+func (c *clientImpl) setMetric(id string, key string, sensor Sensor, value float64) {
+	metrics.Sensor.
+		WithLabelValues(
+			id,
+			sensor.Type,
+			key,
+			sensor.Manufacturername,
+			sensor.Modelid,
+			sensor.Name,
+		).Set(value)
+}
+
+func (c *clientImpl) setBoolMetric(id string, key string, sensor Sensor, value bool) {
+	var f float64
+	if value {
+		f = 1
+	}
+
+	c.setMetric(id, key, sensor, f)
+}
+
 func (c *clientImpl) setMetrics(id string, sensor Sensor) {
 	for key, state := range sensor.State {
-		if value, ok := state.(float64); ok {
-			metrics.Sensor.
-				WithLabelValues(
-					id,
-					sensor.Type,
-					key,
-					sensor.Manufacturername,
-					sensor.Modelid,
-					sensor.Name,
-				).
-				Set(value)
+		switch v := state.(type) {
+		case float64:
+			c.setMetric(id, key, sensor, v)
+		case bool:
+			c.setBoolMetric(id, key, sensor, v)
 		}
 	}
 }

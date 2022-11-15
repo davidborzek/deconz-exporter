@@ -44,7 +44,7 @@ scrape_configs:
 
 ### Exported Metrics
 
-Currently the exporter exports all numeric states of a sensor into a single gauge:
+Currently the exporter exports all numeric and boolean states of a sensor into a single gauge:
 
 ```
 # HELP deconz_sensor_state Sensor state value
