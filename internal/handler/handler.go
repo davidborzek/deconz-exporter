@@ -7,16 +7,16 @@ import (
 )
 
 type handler struct {
-	d         deconz.Client
-	authToken string
-	mux       *http.ServeMux
+	d             deconz.Client
+	expectedToken string
+	mux           *http.ServeMux
 }
 
 func New(d deconz.Client, authToken string) *handler {
 	s := &handler{
-		d:         d,
-		authToken: authToken,
-		mux:       http.NewServeMux(),
+		d:             d,
+		expectedToken: authToken,
+		mux:           http.NewServeMux(),
 	}
 
 	s.mux.HandleFunc("/metrics", s.handleMetrics())
