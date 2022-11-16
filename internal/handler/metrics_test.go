@@ -8,8 +8,10 @@ import (
 	"testing"
 
 	"github.com/davidborzek/deconz-exporter/internal/handler"
+	"github.com/davidborzek/deconz-exporter/internal/metrics"
 	"github.com/davidborzek/deconz-exporter/mock"
 	"github.com/golang/mock/gomock"
+	"github.com/prometheus/client_golang/prometheus/testutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -107,7 +109,7 @@ func TestMetricsHandlerReturnsOKForValidToken(t *testing.T) {
 	assert.Equal(t, http.StatusOK, rr.Code)
 }
 
-func TestMetricsHandlerReturnsInternalServerError(t *testing.T) {
+func TestMetricsHandlerReturnsOKAndIncremetsErrorCounter(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -127,5 +129,6 @@ func TestMetricsHandlerReturnsInternalServerError(t *testing.T) {
 
 	h.ServeHTTP(rr, req)
 
-	assert.Equal(t, http.StatusInternalServerError, rr.Code)
+	assert.Equal(t, float64(1), testutil.ToFloat64(metrics.ErrorCounter))
+	assert.Equal(t, http.StatusOK, rr.Code)
 }
