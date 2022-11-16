@@ -4,17 +4,20 @@ type AuthRequest struct {
 	Username   string `json:"username,omitempty"`
 	Devicetype string `json:"devicetype"`
 }
+type AuthSuccess struct {
+	Username string `json:"username"`
+}
 
 type AuthSuccessResponse struct {
-	Success struct {
-		Username string `json:"username"`
-	} `json:"success"`
+	Success AuthSuccess `json:"success"`
+}
+
+type AuthError struct {
+	Address     string `json:"address"`
+	Description string `json:"description"`
+	Type        int    `json:"type"`
 }
 
 type AuthErrorResponse struct {
-	Error struct {
-		Address     string `json:"address"`
-		Description string `json:"description"`
-		Type        int    `json:"type"`
-	} `json:"error"`
+	Error AuthError `json:"error"`
 }
