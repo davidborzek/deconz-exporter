@@ -99,7 +99,12 @@ func run(ctx *cli.Context) error {
 		ctx.String("deconz-key"),
 	)
 
-	h := handler.New(d, ctx.String("auth-token"))
+	token := ctx.String("auth-token")
+	if len(token) > 0 {
+		log.Info("authentication is enabled")
+	}
+
+	h := handler.New(d, token)
 
 	addr := net.JoinHostPort(ctx.String("host"),
 		ctx.String("port"))
