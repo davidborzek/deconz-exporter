@@ -11,6 +11,10 @@ import (
 	"github.com/davidborzek/deconz-exporter/internal/metrics"
 )
 
+const (
+	iso8601 = "2006-01-02T15:04:05"
+)
+
 type Client interface {
 	CollectMetrics() error
 }
@@ -88,6 +92,13 @@ func (c *clientImpl) setBoolMetric(id string, key string, sensor Sensor, value b
 	c.setMetric(id, key, sensor, f)
 }
 
+func (c *clientImpl) setStringMetric(id string, key string, sensor Sensor, value string) {
+	if date, err := time.Parse(iso8601, value); err == nil {
+		c.setMetric(id, key, sensor, float64(date.Unix()))
+		return
+	}
+}
+
 func (c *clientImpl) setMetrics(id string, sensor Sensor) {
 	for key, state := range sensor.State {
 		switch v := state.(type) {
@@ -95,6 +106,8 @@ func (c *clientImpl) setMetrics(id string, sensor Sensor) {
 			c.setMetric(id, key, sensor, v)
 		case bool:
 			c.setBoolMetric(id, key, sensor, v)
+		case string:
+			c.setStringMetric(id, key, sensor, v)
 		}
 	}
 }

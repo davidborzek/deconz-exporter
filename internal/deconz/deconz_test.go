@@ -20,7 +20,8 @@ var (
 		Name:             "Test",
 		Type:             "TestType",
 		State: map[string]interface{}{
-			"numeric": 123,
+			"numeric":  123,
+			"datetime": "2023-09-18T17:43:12",
 		},
 	}
 
@@ -77,7 +78,7 @@ func TestCollectMetricsSucceedsAndSetsMetrics(t *testing.T) {
 	err := d.CollectMetrics()
 
 	assert.Nil(t, err)
-	assert.Equal(t, 2, testutil.CollectAndCount(metrics.Sensor))
+	assert.Equal(t, 3, testutil.CollectAndCount(metrics.Sensor))
 
 	numericMetric := testutil.ToFloat64(metrics.Sensor.WithLabelValues(
 		sensorId,
@@ -98,6 +99,16 @@ func TestCollectMetricsSucceedsAndSetsMetrics(t *testing.T) {
 		secondTestSensor.Name,
 	))
 	assert.Equal(t, float64(1), boolMetric)
+
+	dateTimeMetric := testutil.ToFloat64(metrics.Sensor.WithLabelValues(
+		sensorId,
+		testSensor.Type,
+		"datetime",
+		testSensor.Manufacturername,
+		testSensor.Modelid,
+		testSensor.Name,
+	))
+	assert.Equal(t, float64(1695058992), dateTimeMetric)
 }
 
 func TestCollectMetricsReturnsErrorForErroneousStatusCode(t *testing.T) {
