@@ -2,19 +2,15 @@ package handler
 
 import (
 	"net/http"
-
-	"github.com/davidborzek/deconz-exporter/internal/deconz"
 )
 
 type handler struct {
-	d             deconz.Client
 	expectedToken string
 	mux           *http.ServeMux
 }
 
-func New(d deconz.Client, authToken string) *handler {
+func New(authToken string) *handler {
 	s := &handler{
-		d:             d,
 		expectedToken: authToken,
 		mux:           http.NewServeMux(),
 	}

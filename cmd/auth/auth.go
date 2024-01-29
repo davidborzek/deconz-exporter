@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	deconzauth "github.com/davidborzek/deconz-exporter/internal/deconz-auth"
-
+	"github.com/davidborzek/deconz-exporter/pkg/deconz"
 	"github.com/urfave/cli/v2"
 )
 
@@ -44,7 +43,7 @@ func run(ctx *cli.Context) error {
 	input := bufio.NewScanner(os.Stdin)
 	input.Scan()
 
-	res, err := deconzauth.Auth(
+	res, err := deconz.Auth(
 		ctx.String("url"),
 		ctx.String("devicetype"),
 		ctx.String("username"),

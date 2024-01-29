@@ -6,9 +6,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/davidborzek/deconz-exporter/internal/deconz"
+	"github.com/davidborzek/deconz-exporter/internal/collector"
 	"github.com/davidborzek/deconz-exporter/internal/handler"
-	"github.com/davidborzek/deconz-exporter/internal/metrics"
+	"github.com/davidborzek/deconz-exporter/pkg/deconz"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/urfave/cli/v2"
 
 	log "github.com/sirupsen/logrus"
@@ -92,19 +93,20 @@ func run(ctx *cli.Context) error {
 	log.WithField("pid", os.Getpid()).
 		Infof("deCONZ prometheus exporter started")
 
-	metrics.Init()
-
-	d := deconz.New(
+	deconzClient := deconz.NewClient(
 		ctx.String("deconz-url"),
 		ctx.String("deconz-key"),
 	)
+
+	deconzCollector := collector.NewDeconzCollector(deconzClient)
+	prometheus.MustRegister(deconzCollector)
 
 	token := ctx.String("auth-token")
 	if len(token) > 0 {
 		log.Info("authentication is enabled")
 	}
 
-	h := handler.New(d, token)
+	h := handler.New(token)
 
 	addr := net.JoinHostPort(ctx.String("host"),
 		ctx.String("port"))

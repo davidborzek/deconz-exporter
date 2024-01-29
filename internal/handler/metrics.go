@@ -5,9 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/davidborzek/deconz-exporter/internal/metrics"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	log "github.com/sirupsen/logrus"
 )
 
 // authenticate authenticates a request when a token is configured.
@@ -33,13 +31,6 @@ func (s *handler) handleMetrics() func(http.ResponseWriter, *http.Request) {
 		if err := s.authenticate(r); err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			return
-		}
-
-		if err := s.d.CollectMetrics(); err != nil {
-			log.WithError(err).
-				Error("failed to collect metrics from deCONZ")
-
-			metrics.ErrorCounter.Inc()
 		}
 
 		promhttp.Handler().ServeHTTP(w, r)

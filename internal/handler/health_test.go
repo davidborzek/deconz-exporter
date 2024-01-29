@@ -16,7 +16,7 @@ func TestHealthHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	h := handler.New(nil, "")
+	h := handler.New("")
 
 	h.ServeHTTP(rr, req)
 

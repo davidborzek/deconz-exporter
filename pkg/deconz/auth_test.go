@@ -1,4 +1,4 @@
-package deconzauth_test
+package deconz_test
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	deconzauth "github.com/davidborzek/deconz-exporter/internal/deconz-auth"
+	"github.com/davidborzek/deconz-exporter/pkg/deconz"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,14 +16,14 @@ const (
 )
 
 var (
-	authSuccessResponse = deconzauth.AuthSuccessResponse{
-		Success: deconzauth.AuthSuccess{
+	authSuccessResponse = deconz.AuthSuccessResponse{
+		Success: deconz.AuthSuccess{
 			Username: "someKey",
 		},
 	}
 
-	authErrorResponse = deconzauth.AuthErrorResponse{
-		Error: deconzauth.AuthError{
+	authErrorResponse = deconz.AuthErrorResponse{
+		Error: deconz.AuthError{
 			Address:     "TestAddress",
 			Description: "TestDescription",
 			Type:        0,
@@ -38,7 +38,7 @@ func TestAuthSucceeds(t *testing.T) {
 			panic(err)
 		}
 
-		var authRequest deconzauth.AuthRequest
+		var authRequest deconz.AuthRequest
 		if err := json.Unmarshal(req, &authRequest); err != nil {
 			panic(err)
 		}
@@ -46,7 +46,7 @@ func TestAuthSucceeds(t *testing.T) {
 		assert.Equal(t, deviceName, authRequest.Devicetype)
 		assert.Equal(t, "", authRequest.Username)
 
-		res, err := json.Marshal([]deconzauth.AuthSuccessResponse{
+		res, err := json.Marshal([]deconz.AuthSuccessResponse{
 			authSuccessResponse,
 		})
 		if err != nil {
@@ -57,7 +57,7 @@ func TestAuthSucceeds(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	res, err := deconzauth.Auth(srv.URL, deviceName, "")
+	res, err := deconz.Auth(srv.URL, deviceName, "")
 
 	assert.Nil(t, err)
 	assert.Equal(t, authSuccessResponse, *res)
@@ -65,7 +65,7 @@ func TestAuthSucceeds(t *testing.T) {
 
 func TestAuthReturnsErrorWhenServerReturnsOKButEmptyArray(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		res, err := json.Marshal([]deconzauth.AuthSuccessResponse{})
+		res, err := json.Marshal([]deconz.AuthSuccessResponse{})
 		if err != nil {
 			panic(err)
 		}
@@ -74,14 +74,14 @@ func TestAuthReturnsErrorWhenServerReturnsOKButEmptyArray(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	res, err := deconzauth.Auth(srv.URL, deviceName, "")
+	res, err := deconz.Auth(srv.URL, deviceName, "")
 
 	assert.Nil(t, res)
 	assert.Errorf(t, err, "unknown authentication failure")
 }
 
 func TestAuthReturnsErrorForClientError(t *testing.T) {
-	res, err := deconzauth.Auth("", deviceName, "")
+	res, err := deconz.Auth("", deviceName, "")
 
 	assert.NotNil(t, err)
 	assert.Nil(t, res)
@@ -89,7 +89,7 @@ func TestAuthReturnsErrorForClientError(t *testing.T) {
 
 func TestAuthReturnsErrorForServerSideError(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		res, err := json.Marshal([]deconzauth.AuthErrorResponse{
+		res, err := json.Marshal([]deconz.AuthErrorResponse{
 			authErrorResponse,
 		})
 		if err != nil {
@@ -101,7 +101,7 @@ func TestAuthReturnsErrorForServerSideError(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	res, err := deconzauth.Auth(srv.URL, deviceName, "")
+	res, err := deconz.Auth(srv.URL, deviceName, "")
 
 	assert.NotNil(t, err)
 	assert.Nil(t, res)
@@ -111,7 +111,7 @@ func TestAuthReturnsErrorForServerSideError(t *testing.T) {
 
 func TestAuthServerReturnsEmptyErrorResponse(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		res, err := json.Marshal([]deconzauth.AuthErrorResponse{})
+		res, err := json.Marshal([]deconz.AuthErrorResponse{})
 		if err != nil {
 			panic(err)
 		}
@@ -121,7 +121,7 @@ func TestAuthServerReturnsEmptyErrorResponse(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	res, err := deconzauth.Auth(srv.URL, deviceName, "")
+	res, err := deconz.Auth(srv.URL, deviceName, "")
 
 	assert.Nil(t, res)
 	assert.Errorf(t, err, "unknown authentication failure")
