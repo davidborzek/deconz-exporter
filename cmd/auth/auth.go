@@ -28,6 +28,18 @@ var (
 			Value:   "deconz-exporter",
 			EnvVars: []string{"DECONZ_DEVICETYPE"},
 		},
+		&cli.StringFlag{
+			Name:    "format",
+			Usage:   "Output format (json, text)",
+			Value:   "text",
+			EnvVars: []string{"DECONZ_FORMAT"},
+		},
+		&cli.BoolFlag{
+			Name:    "confirm",
+			Usage:   "Skip the confirmation prompt",
+			EnvVars: []string{"DECONZ_YES"},
+			Aliases: []string{"y"},
+		},
 	}
 
 	Cmd = &cli.Command{
@@ -39,9 +51,17 @@ var (
 )
 
 func run(ctx *cli.Context) error {
-	fmt.Println("Enable discovery in gateway settings and press enter to continue...")
-	input := bufio.NewScanner(os.Stdin)
-	input.Scan()
+	format := ctx.String("format")
+	if format != "json" && format != "text" {
+		fmt.Printf("Invalid format: %s\n", format)
+		return nil
+	}
+
+	if !ctx.Bool("confirm") {
+		fmt.Println("Enable discovery in gateway settings and press enter to continue...")
+		input := bufio.NewScanner(os.Stdin)
+		input.Scan()
+	}
 
 	res, err := deconz.Auth(
 		ctx.String("url"),
@@ -54,7 +74,11 @@ func run(ctx *cli.Context) error {
 		return nil
 	}
 
-	fmt.Printf("API key: %s\n", res.Success.Username)
+	if format == "json" {
+		fmt.Printf(`{"api_key": "%s"}`, res.Success.Username)
+		return nil
+	}
 
+	fmt.Printf("API key: %s\n", res.Success.Username)
 	return nil
 }
