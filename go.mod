@@ -2,7 +2,7 @@ module github.com/davidborzek/deconz-exporter
 
 go 1.22
 
-toolchain go1.24.4
+toolchain go1.24.5
 
 require (
 	github.com/prometheus/client_golang v1.22.0
